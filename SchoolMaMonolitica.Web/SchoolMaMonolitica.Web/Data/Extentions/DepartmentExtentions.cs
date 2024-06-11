@@ -1,6 +1,6 @@
 ﻿using SchoolMaMonolitica.Web.Data.DbObjects;
 using SchoolMaMonolitica.Web.Data.Entities;
-using SchoolMaMonolitica.Web.Data.Models;
+using SchoolMaMonolitica.Web.Data.Models.Department;
 
 namespace SchoolMaMonolitica.Web.Data.Extentions
 {
@@ -11,9 +11,9 @@ namespace SchoolMaMonolitica.Web.Data.Extentions
         /// </summary>
         /// <param name="department"></param>
         /// <returns></returns>
-        public static DepartmentModel ConvertDeptoEntitytoDepartmentModel(this Department department) 
+        public static DepartmentGetModel ConvertDeptoEntitytoDepartmentModel(this Department department) 
         {
-            DepartmentModel departmentModel = new DepartmentModel()
+            DepartmentGetModel departmentModel = new DepartmentGetModel()
             {
                 Administrator = department.Administrator,
                 Budget = department.Budget,

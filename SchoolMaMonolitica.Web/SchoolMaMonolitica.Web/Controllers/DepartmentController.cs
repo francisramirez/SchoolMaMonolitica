@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SchoolMaMonolitica.Web.BL.Services;
 using SchoolMaMonolitica.Web.Data.Context;
 using SchoolMaMonolitica.Web.Data.Interfaces;
+using SchoolMaMonolitica.Web.Data.Models.Department;
 
 namespace SchoolMaMonolitica.Web.Controllers
 {
@@ -23,7 +25,10 @@ namespace SchoolMaMonolitica.Web.Controllers
         // GET: DepartmentController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+
+            var department = this.departmentDb.GetDepartment(id);
+
+            return View(department);
         }
 
         // GET: DepartmentController/Create
@@ -35,10 +40,13 @@ namespace SchoolMaMonolitica.Web.Controllers
         // POST: DepartmentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(DepartmentSaveModel departmentSave)
         {
             try
             {
+                departmentSave.ChangeDate = DateTime.Now;
+                departmentSave.ChangeUser = 1;
+                this.departmentDb.SaveDepartment(departmentSave);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -50,16 +58,22 @@ namespace SchoolMaMonolitica.Web.Controllers
         // GET: DepartmentController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var department = this.departmentDb.GetDepartment(id);
+
+            return View(department);
         }
 
         // POST: DepartmentController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(DepartmentUpdateModel departmentUpdate)
         {
             try
             {
+                departmentUpdate.ChangeDate = DateTime.Now;
+                departmentUpdate.ChangeUser = 1;
+
+                this.departmentDb.UpdateDepartment(departmentUpdate);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -68,25 +82,6 @@ namespace SchoolMaMonolitica.Web.Controllers
             }
         }
 
-        // GET: DepartmentController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: DepartmentController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+       
     }
 }

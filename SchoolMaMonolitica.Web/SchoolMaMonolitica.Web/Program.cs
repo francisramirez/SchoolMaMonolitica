@@ -1,7 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using SchoolMaMonolitica.Web.Data.Context;
+using SchoolMaMonolitica.Web.Data.DbObjects;
+using SchoolMaMonolitica.Web.Data.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<SchoolContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SchoolContext")));
+
+builder.Services.AddScoped<IDepartmentDb, DepartmentDb>();
 
 var app = builder.Build();
 

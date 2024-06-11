@@ -2,8 +2,9 @@
 using SchoolMaMonolitica.Web.Data.Entities;
 using SchoolMaMonolitica.Web.Data.Exceptions;
 using SchoolMaMonolitica.Web.Data.Interfaces;
-using SchoolMaMonolitica.Web.Data.Models;
 using SchoolMaMonolitica.Web.Data.Extentions;
+using SchoolMaMonolitica.Web.Data.Models.Department;
+
 namespace SchoolMaMonolitica.Web.Data.DbObjects
 {
     public class DepartmentDb : IDepartmentDb
@@ -14,30 +15,31 @@ namespace SchoolMaMonolitica.Web.Data.DbObjects
         {
             this.context = context;
         }
-        public DepartmentModel GetDepartment(int idDepartment)
+        public DepartmentGetModel GetDepartment(int idDepartment)
         {
-            var department = this.context.Departments.Find(idDepartment)
-                                                      .ConvertDeptoEntitytoDepartmentModel();
+            var department = this.context.Departments.Find(idDepartment);
 
+            if (department is null)
+            {
+                throw new DepartmentDbException($"No se encontro el departamento con el id { idDepartment }");
+            }
 
-
-
-            //DepartmentModel departmentModel = new DepartmentModel()
-            //{
-            //    Administrator = department.Administrator,
-            //    Budget = department.Budget,
-            //    CreationDate = department.CreationDate,
-            //    Name = department.Name,
-            //    DepartmentId = department.DepartmentId,
-            //    StartDate = department.StartDate
-            //};
+            DepartmentGetModel departmentModel = new DepartmentGetModel()
+            {
+                Administrator = department.Administrator,
+                Budget = department.Budget,
+                CreationDate = department.CreationDate,
+                Name = department.Name,
+                DepartmentId = department.DepartmentId,
+                StartDate = department.StartDate
+            };
 
             return departmentModel;
         }
 
-        public List<DepartmentModel> GetDepartments()
+        public List<DepartmentGetModel> GetDepartments()
         {
-            return this.context.Departments.Select(department => new DepartmentModel()
+            return this.context.Departments.Select(department => new DepartmentGetModel()
             {
                 Administrator = department.Administrator,
                 Budget = department.Budget,
@@ -76,10 +78,10 @@ namespace SchoolMaMonolitica.Web.Data.DbObjects
             {
                 Administrator = departmentSave.Administrator,
                 Budget = departmentSave.Budget,
-                CreationDate = departmentSave.CreationDate,
+                CreationDate = departmentSave.ChangeDate,
                 Name = departmentSave.Name,
                 StartDate = departmentSave.StartDate,
-                CreationUser = departmentSave.CreationUser
+                CreationUser = departmentSave.ChangeUser
             };
 
             this.context.Departments.Add(department);
@@ -96,8 +98,8 @@ namespace SchoolMaMonolitica.Web.Data.DbObjects
                 throw new DepartmentDbException("El departamento no se encuentra registrado.");
             }
 
-            departmentToUpdate.ModifyDate = updateModel.ModifyDate;
-            departmentToUpdate.UserMod = updateModel.UserMod;
+            departmentToUpdate.ModifyDate = updateModel.ChangeDate;
+            departmentToUpdate.UserMod = updateModel.ChangeUser;
             departmentToUpdate.Name = updateModel.Name;
             departmentToUpdate.StartDate = updateModel.StartDate;
             departmentToUpdate.Budget = updateModel.Budget;
